@@ -18,5 +18,5 @@
 
 // the embdedded tableview controller
 @interface TableViewController : UITableViewController
-@property (nonatomic, assign, readonly) UIInterfaceOrientation chosenOrientation;
+@property (nonatomic, assign) UIInterfaceOrientation chosenOrientation;
 @end

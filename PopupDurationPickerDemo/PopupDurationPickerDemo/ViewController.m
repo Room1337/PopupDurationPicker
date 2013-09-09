@@ -17,12 +17,18 @@
 
 @implementation ViewController
 
+- (void)loadView
+{
+	self.pickerOrientation = UIInterfaceOrientationPortrait;
+	[super loadView];
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
 	// if embedded table view controller spotted getting embedded, get the correct orientation from it
 	// (if no such embedded view controller, pickerOrientation goes uninitialized, i'm not gonna worry about it)
 	if ([segue.destinationViewController isKindOfClass:[TableViewController class]])
-		self.pickerOrientation = ((TableViewController *)segue.destinationViewController).chosenOrientation;
+		((TableViewController *)segue.destinationViewController).chosenOrientation = self.pickerOrientation;
 }
 
 - (void)orientationChosen:(id)sender
@@ -62,27 +68,11 @@
 // can't make the parent view controller the table view delegate
 // so need our own mechanism to inform it of changes to the orientation chose
 
-@interface TableViewController ()
-@property (nonatomic, assign, readwrite) UIInterfaceOrientation chosenOrientation;
-@end
-
 @implementation TableViewController
 
 - (void)viewDidLoad
 {
-	self.chosenOrientation = UIInterfaceOrientationPortrait;
-	
 	UITableView *tableView = (UITableView *)self.view;
-	
-	// if nib checks one of the rows, then make that one the default instead (kinda unnecessary)
-	for (NSInteger i = 0, n = [tableView numberOfRowsInSection:0]; i < n; ++i)
-	{
-		UITableViewCell *cell = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-		if (cell.accessoryType == UITableViewCellAccessoryCheckmark) {
-			self.chosenOrientation = [self orientationForRow:i];
-			break;
-		}
-	}
 	
 	// make sure chosen row is checked and all others aren't
 	for (NSInteger i = 0, n = [tableView numberOfRowsInSection:0]; i < n; ++i)
